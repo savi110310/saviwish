@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday, Chavi! 💖</title>
+    <style>
+        /* General Body Styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Using a common system font */
+            margin: 0;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+            background-color: #1a001a; /* Dark base for romantic feel */
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+            box-sizing: border-box;
+        }
+
+        /* Page Container Styling */
+        .page-container {
+            width: 100%;
+            max-width: 900px; /* Max width for content */
+            min-height: 100vh;
+            background: linear-gradient(135deg, #2a002a, #4a004a); /* Darker gradient */
+            box-shadow: 0 0 50px rgba(255, 0, 100, 0.5); /* Romantic glow */
+            border-radius: 20px;
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start; /* Align content to top */
+            position: relative;
+        }
+
+        /* Page Specific Styling */
+        .page {
+            width: 100%;
+            min-height: 100vh; /* Ensure pages take full height */
+            display: none; /* Hidden by default, JS will show */
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 10;
+            background: linear-gradient(135deg, #2a002a, #4a004a); /* Match container background */
+            border-radius: 20px; /* Match container border-radius */
+            overflow-y: auto; /* Allow vertical scrolling within each page */
+            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+        }
+
+        .page.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        /* Page 1 Specifics */
+        #page1 {
+            background: linear-gradient(135deg, #3a003a, #6a006a); /* Darker, more intense gradient */
+            position: relative;
+            overflow: hidden; /* Keep hidden for initial animations */
+            z-index: 1;
+        }
+
+        #page1 h1 {
+            font-size: clamp(2em, 8vw, 4em); /* Responsive font size */
+            color: #ffccdd; /* Soft pink */
+            text-shadow: 0 0 15px rgba(255, 100, 150, 0.8);
+            margin-bottom: 30px;
+            animation: fadeIn 2s ease-out;
+        }
+
+        /* Open Button */
+        .open-button {
+            background: linear-gradient(45deg, #ff66aa, #ff99bb);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: clamp(1.2em, 5vw, 2em);
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(255, 102, 170, 0.7);
+            transition: all 0.3s ease;
+            animation: pulse 2s infinite alternate;
+            z-index: 20;
+            position: relative;
+        }
+
+        .open-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(255, 102, 170, 1);
+        }
+
+        /* Cake & Message */
+        .cake-container {
+            display: none; /* Changed back to 'none' */
+            flex-direction: column;
+            align-items: center;
+            margin-top: 40px;
+            animation: fadeInScale 1s ease-out forwards; /* Re-added animation */
+            position: relative; /* For positioning candles */
+            /* Removed padding-top here as candles-wrapper 'top' will handle positioning */
+        }
+
+        /* Styled Cake Layers */
+        .cake-layer {
+            background-color: #ffccdd; /* Light pink */
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            /* Removed margin-bottom to make them stick together */
+            position: relative;
+            z-index: 12; /* Higher z-index to appear in front of candles */
+        }
+
+        /* Adjusted order for "normal" cake (shortest to longest) */
+        .cake-layer:nth-child(1) { /* This will be the top layer now (shortest) */
+            width: clamp(90px, 30vw, 200px);
+            height: 40px;
+            background-color: #FFC0CB; /* Light Pink */
+        }
+        .cake-layer:nth-child(2) {
+            width: clamp(120px, 40vw, 250px);
+            height: 40px;
+            background-color: #FF69B4; /* Hot Pink */
+        }
+        .cake-layer:nth-child(3) { /* This will be the bottom layer now (longest) */
+            width: clamp(150px, 50vw, 300px);
+            height: 40px;
+            background-color: #C71585; /* Medium Violet Red */
+        }
+
+        .cake-message {
+            font-size: clamp(1.5em, 6vw, 3em);
+            color: #ffdddd;
+            text-shadow: 0 0 10px rgba(255, 200, 220, 0.8);
+            margin-top: 30px; /* Adjusted margin-top to be below the cake layers */
+            margin-bottom: 30px;
+            animation: slideInUp 1s ease-out forwards; /* Re-added animation */
+            opacity: 0; /* Starts hidden for animation */
+            animation-delay: 0.5s; /* Delay for animation */
+        }
+
+        /* Candles on Cake */
+        .candles-wrapper {
+            position: absolute;
+            /* Adjusted 'top' to embed candles into the top cake layer */
+            top: -20px; /* Half the candle height to make it look embedded */
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px; /* Adjusted gap for 5 candles */
+            z-index: 11; /* Lower z-index to appear behind the cake layers */
+        }
+        .candle {
+            width: 15px; /* Smaller candles */
+            height: 40px;
+            background-color: #f0f0f0;
+            border-radius: 3px;
+            position: relative;
+            box-shadow: 0 0 5px rgba(255, 255, 200, 0.5);
+        }
+        .wick {
+            width: 1px;
+            height: 5px;
+            background-color: #333;
+            position: absolute;
+            top: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .flame {
+            width: 10px; /* Smaller flame */
+            height: 18px;
+            background: radial-gradient(circle at 50% 0, #ffeb3b, #ff9800, transparent);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            position: absolute;
+            top: -23px; /* Adjust to sit on wick */
+            left: 50%;
+            transform: translateX(-50%);
+            animation: flicker 0.5s infinite alternate;
+            filter: drop-shadow(0 0 5px #ffeb3b);
+            transition: opacity 0.3s ease-out; /* For blowing out effect */
+        }
+        /* New rule for truly blown-out flames */
+        .flame.blown-out {
+            opacity: 0;
+            /* Optionally, you can also scale it down or move it slightly */
+            transform: translateX(-50%) scale(0);
+        }
+
+        /* Love Letter Icon */
+        .letter-icon {
+            font-size: clamp(3em, 10vw, 6em);
+            cursor: pointer;
+            color: #ffb3cc;
+            text-shadow: 0 0 10px rgba(255, 179, 204, 0.7);
+            transition: transform 0.3s ease;
+            display: none;
+            animation: fadeIn 1s ease-out forwards;
+            animation-delay: 1.5s;
+            opacity: 0;
+        }
+
+        .letter-icon:hover {
+            transform: scale(1.1);
+        }
+
+        /* Love Letter Content */
+        .love-letter-content {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            color: #333;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            margin-top: 30px;
+            max-width: 80%;
+            text-align: left;
+            line-height: 1.6;
+            font-size: clamp(1em, 4vw, 1.2em);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .love-letter-content.open {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Image Slider */
+        .image-slider {
+            display: none;
+            width: 100%;
+            max-width: 600px;
+            height: clamp(200px, 60vw, 400px);
+            margin-top: 40px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(255, 100, 150, 0.5);
+            animation: fadeIn 1s ease-out forwards;
+            animation-delay: 3s;
+            opacity: 0;
+        }
+
+        .slider-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            border-radius: 15px;
+        }
+
+        .slider-image.active {
+            opacity: 1;
+        }
+
+        /* Navigation Buttons (Global) */
+        .nav-buttons {
+            margin-top: 40px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+            z-index: 30; /* Ensure they are above other content */
+        }
+
+        .nav-button {
+            background: linear-gradient(45deg, #ff66aa, #ff99bb);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: clamp(0.9em, 4vw, 1.1em);
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(255, 102, 170, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .nav-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(255, 102, 170, 0.8);
+        }
+
+        /* Page 2 Specifics (Photo Gallery) */
+        #page2 h2 {
+            font-size: clamp(1.8em, 7vw, 3.5em);
+            color: #ffccdd;
+            text-shadow: 0 0 15px rgba(255, 100, 150, 0.8);
+            margin-bottom: 40px;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            width: 100%;
+            max-width: 800px;
+            margin-bottom: 40px;
+        }
+
+        .gallery-item {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: clamp(150px, 40vw, 250px);
+            object-fit: cover;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .gallery-item p {
+            padding: 15px;
+            font-size: clamp(0.9em, 3vw, 1em);
+            color: #ffdddd;
+        }
+
+        /* Page 3 Specifics (Memories & Moments) */
+        #page3 h2 {
+            font-size: clamp(1.8em, 7vw, 3.5em);
+            color: #ffccdd;
+            text-shadow: 0 0 15px rgba(255, 100, 150, 0.8);
+            margin-bottom: 40px;
+        }
+
+        .timeline {
+            width: 100%;
+            max-width: 700px;
+            position: relative;
+            padding: 20px 0;
+            color: #ffdddd;
+            /* Ensure timeline itself can scroll if content overflows its max-height */
+            max-height: calc(100vh - 200px); /* Adjust based on header/footer height */
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            width: 2px;
+            height: 100%;
+            background: #ff66aa;
+            transform: translateX(-50%);
+        }
+
+        .timeline-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .timeline-item:nth-child(odd) {
+            flex-direction: row-reverse;
+        }
+
+        .timeline-item-content {
+            width: 45%;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        .timeline-item-content::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            width: 0;
+            height: 0;
+            border-style: solid;
+        }
+
+        .timeline-item:nth-child(even) .timeline-item-content::before {
+            right: -20px;
+            border-width: 10px 0 10px 10px;
+            border-color: transparent transparent transparent rgba(255, 255, 255, 0.1);
+        }
+
+        .timeline-item:nth-child(odd) .timeline-item-content::before {
+            left: -20px;
+            border-width: 10px 10px 10px 0;
+            border-color: transparent rgba(255, 255, 255, 0.1) transparent transparent;
+        }
+
+        .timeline-item-dot {
+            width: 20px;
+            height: 20px;
+            background: #ff66aa;
+            border-radius: 50%;
+            position: absolute;
+            left: 50%;
+            top: 20px;
+            transform: translateX(-50%);
+            z-index: 1;
+            box-shadow: 0 0 10px #ff66aa;
+        }
+
+        .timeline-item h3 {
+            margin-top: 0;
+            color: #ffccdd;
+            font-size: clamp(1.2em, 4vw, 1.5em);
+        }
+
+        .timeline-item p {
+            font-size: clamp(0.9em, 3vw, 1em);
+        }
+
+        /* Mobile Adjustments for Timeline */
+        @media (max-width: 768px) {
+            .timeline::before {
+                left: 20px;
+            }
+            .timeline-item {
+                flex-direction: column !important;
+                align-items: flex-start;
+            }
+            .timeline-item-content {
+                width: calc(100% - 60px);
+                margin-left: 60px;
+            }
+            .timeline-item-content::before {
+                left: -20px;
+                border-width: 10px 10px 10px 0 !important;
+                border-color: transparent rgba(255, 255, 255, 0.1) transparent transparent !important;
+            }
+            .timeline-item-dot {
+                left: 20px;
+            }
+        }
+
+        /* Background Animations (Hearts) */
+        .heart-bg {
+            position: absolute;
+            background-color: rgba(255, 100, 150, 0.2);
+            border-radius: 50%;
+            animation: floatHeart 15s infinite ease-in-out;
+            opacity: 0;
+            z-index: 0;
+        }
+        .heart-bg:nth-child(1) { width: 80px; height: 80px; top: 10%; left: 5%; animation-delay: 0s; }
+        .heart-bg:nth-child(2) { width: 60px; height: 60px; top: 30%; left: 80%; animation-delay: 3s; }
+        .heart-bg:nth-child(3) { width: 100px; height: 100px; top: 60%; left: 20%; animation-delay: 6s; }
+        .heart-bg:nth-child(4) { width: 70px; height: 70px; top: 80%; left: 60%; animation-delay: 9s; }
+        .heart-bg:nth-child(5) { width: 90px; height: 90px; top: 5%; left: 40%; animation-delay: 12s; }
+
+        /* Rose Petals */
+        .petal {
+            position: absolute;
+            background-color: #ff69b4; /* Hot pink */
+            border-radius: 50%;
+            opacity: 0;
+            animation: fallPetal 10s linear infinite;
+            z-index: 5;
+        }
+        .petal:nth-child(1) { width: 15px; height: 15px; left: 10%; animation-delay: 0s; }
+        .petal:nth-child(2) { width: 12px; height: 12px; left: 25%; animation-delay: 2s; }
+        .petal:nth-child(3) { width: 18px; height: 18px; left: 40%; animation-delay: 4s; }
+        .petal:nth-child(4) { width: 10px; height: 10px; left: 55%; animation-delay: 6s; }
+        .petal:nth-child(5) { width: 16px; height: 16px; left: 70%; animation-delay: 8s; }
+        .petal:nth-child(6) { width: 14px; height: 14px; left: 85%; animation-delay: 1s; }
+        .petal:nth-child(7) { width: 17px; height: 17px; left: 5%; animation-delay: 3s; }
+        .petal:nth-child(8) { width: 11px; height: 11px; left: 90%; animation-delay: 5s; }
+        .petal:nth-child(9) { width: 19px; height: 19px; left: 30%; animation-delay: 7s; }
+        .petal:nth-child(10) { width: 13px; height: 13px; left: 65%; animation-delay: 9s; }
+
+        /* Party Popper Confetti */
+        .popper-confetti {
+            position: fixed;
+            width: 15px;
+            height: 15px;
+            background-color: #ff00ff; /* Bright magenta */
+            opacity: 0;
+            border-radius: 50%; /* Default to circles */
+            animation: popperFall linear forwards;
+            z-index: 100; /* Ensure it's on top */
+            transform-origin: center center; /* For rotation */
+        }
+        .popper-confetti.square {
+            border-radius: 0; /* Square shape */
+        }
+        .popper-confetti.star {
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+            background-color: #ffff00; /* Yellow star */
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 20px rgba(255, 102, 170, 0.7); }
+            100% { transform: scale(1.03); box-shadow: 0 0 30px rgba(255, 102, 170, 1); }
+        }
+
+        @keyframes flicker {
+            0%, 100% { transform: translateX(-50%) scaleY(1); opacity: 1; }
+            50% { transform: translateX(-50%) scaleY(0.95); opacity: 0.9; }
+        }
+
+        @keyframes fallPetal {
+            0% { transform: translateY(-100px) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.8; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
+
+        @keyframes popperFall {
+            0% {
+                transform: translate(-50%, -50%) scale(0.5) rotate(0deg);
+                opacity: 1;
+                top: 50%; /* Start from center for burst */
+                left: 50%;
+            }
+            100% {
+                transform: translate(var(--x-end), var(--y-end)) scale(1) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            .page-container {
+                border-radius: 0;
+                padding: 10px;
+            }
+            .page {
+                padding: 10px;
+            }
+            .gallery-grid {
+                grid-template-columns: 1fr; /* Single column on small screens */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="heart-bg"></div>
+    <div class="heart-bg"></div>
+    <div class="heart-bg"></div>
+    <div class="heart-bg"></div>
+    <div class="heart-bg"></div>
+
+    <div class="page-container">
+        <div id="page1" class="page active">
+            <div class="petal"></div>
+            <div class="petal"></div>
+            <div class="petal"></div>
+            <div class="petal"></div>
+            <div class="petal"></div>
+            <div class="petal"></div>
+            <div class="petal"></div>
+            <div class="petal"></div>
+            <div class="petal"></div>
+            <div class="petal"></div>
+
+            <h1>Open the surprise, princess! 🎀🤌</h1>
+            <button class="open-button" onclick="openBirthdaySurprise()">💖 Open 💖</button>
+
+            <div class="cake-container" id="cakeContainer">
+                <!-- Three div elements for cake layers - shortest to longest -->
+                <div class="cake-layer"></div> <!-- Shortest layer (top) -->
+                <div class="cake-layer"></div> <!-- Medium layer -->
+                <div class="cake-layer"></div> <!-- Longest layer (bottom) -->
+
+                <div class="candles-wrapper hidden" id="candlesWrapper">
+                    <!-- Five candles -->
+                    <div class="candle">
+                        <div class="wick"></div>
+                        <div class="flame" id="flame1"></div>
+                    </div>
+                    <div class="candle">
+                        <div class="wick"></div>
+                        <div class="flame" id="flame2"></div>
+                    </div>
+                    <div class="candle">
+                        <div class="wick"></div>
+                        <div class="flame" id="flame3"></div>
+                    </div>
+                    <div class="candle">
+                        <div class="wick"></div>
+                        <div class="flame" id="flame4"></div>
+                    </div>
+                    <div class="candle">
+                        <div class="wick"></div>
+                        <div class="flame" id="flame5"></div>
+                    </div>
+                </div>
+                <p class="cake-message" id="cakeMessage">🎂 Happy Birthday My Love 🎂</p>
+                <button id="blowCandlesButton" class="nav-button mt-4 hidden" onclick="blowCandles()">Blow Candles! 🌬️</button>
+            </div>
+
+            <span class="letter-icon" id="letterIcon" onclick="openLoveLetter()">💌</span>
+
+            <div class="love-letter-content" id="loveLetterContent">
+                <p>Happy 15th birthday, my love🎀🧿 balak, u are the most caring and loving person I have ever met😌, and I feel so lucky to be with you💞. I promise to always cherish and respect you🥰, and to support you in all your dreams 💌and goals. Baccha 🥰🤌 u really brought so much joy and happiness into my life.🫠 U are really the reason I smile every day🤧 know that I'm not always the best with words🥲, but I want you to know on this special day how I really feel, so madly, deeply in love with you🤌🎀 
+
+You are the most special one to me🥹. Thank you for being mine🤧. I love you so much mine bby princess 🧿💞😘
+Happy birthday once again bachha 💝, enjoy your day with a lots of fun 😊🎀🤌</p>
+            </div>
+
+            <div class="image-slider" id="imageSlider">
+                <img src="https://placehold.co/600x400/ffdddd/663366?text=Image+1" alt="Memory 1" class="slider-image active">
+                <img src="https://placehold.co/600x400/ffccdd/663366?text=Image+2" alt="Memory 2" class="slider-image">
+                <img src="https://placehold.co/600x400/ffbbdd/663366?text=Image+3" alt="Memory 3" class="slider-image">
+            </div>
+
+            <div class="nav-buttons" id="navButtonsPage1">
+                <button class="nav-button" onclick="showPage('page2')">View Gallery</button>
+                <button class="nav-button" onclick="showPage('page3')">Our Story</button>
+            </div>
+        </div>
+
+        <div id="page2" class="page">
+            <h2>Mine Heart’s Gallery</h2>
+            <div class="gallery-grid">
+                <div class="gallery-item">
+                    <img src="https://photos.google.com/u/2/photo/AF1QipMZgWirsUhRpONGt8CotIb5UgCxJ-s8vo8QKUFu" alt="Memory 1">
+                    <p>With whom mine world start with</p>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://drive.google.com/file/d/1P6NpgXovDXVh2Hn7wOZDaqdYrQHqGNAu/view?usp=drive_link" alt="Memory 2">
+                    <p>Mine precious treasure</p>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://imgs.search.brave.com/HF_GVERln7fg3Qj5jr_eRHsNTjZVic5SFf05fXdPaNM/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9zdGF0/aWMudmVjdGVlenku/Y29tL3N5c3RlbS9y/ZXNvdXJjZXMvdGh1/bWJuYWlscy8wMjEv/OTAxLzQyNC9zbWFs/bC9zdW5zZXQtaW4t/dGhlLW1vdW50YWlu/cy1zdW5yaXNlLWlu/LXRoZS1tb3VudGFp/bnMtYmVhdXRpZnVs/LXdpbnRlci1sYW5k/c2NhcGUtbW91bnRh/aW4tbGFuZHNjYXBl/LWF0LXN1bnNldC1w/YW5vcmFtaWMtdmll/dy1vZi10aGUtbW91/bnRhaW5zLXBob3Rv/LmpwZw" alt="Memory 3">
+                    <p> You are my forever love</p>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://drive.google.com/file/d/1P6NpgXovDXVh2Hn7wOZDaqdYrQHqGNAu/view?usp=drive_link" alt="Memory 4">
+                    <p>You complete my every moment</p>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://en.wikinews.org/wiki/File:Borrowdale_Valley,_Lake_District.png" alt="Memory 5">
+                    <p>I’m happiest with you near</p>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://i.postimg.cc/VNfLYkH5/Lvl-999.png" alt="Memory 6">
+                    <p>In such a cruel world, you are my reason to smile</p>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-button" onclick="showPage('page1')">Back to Home</button>
+                <button class="nav-button" onclick="showPage('page3')">Our Story</button>
+            </div>
+        </div>
+
+        <div id="page3" class="page">
+            <h2>Memories & Moments</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-item-dot"></div>
+                    <div class="timeline-item-content">
+                        <h3>August 19, 2024: The Day We Met</h3>
+                        <p>The way we meet is really something very interesting like no one can even trust if that is for real, but we really did, and since then I feel like I really get a new life where now I have someone for whom I can live.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-item-dot"></div>
+                    <div class="timeline-item-content">
+                        <h3>First Calls & Late Nights</h3>
+                        <p>Call ki baat to bohot shi thii, jhaa we can’t forget our first video call Diwali of 2024 thaa, us din aisa thaa kii it’s hard for me to explain, but just think ki mere life ki best Diwali thii, when we also did twinning. And baat rhi late night ki, so even forget about the sleep just for mee, mere ko baat karni ho yaa kaam, and that really hit to me ki someone was doing efforts for mee who always starve for the love. Haa vo raat kaa 4 bje tak ki baat bhulaa nhi huuu mai. A warmly thanku bachha for being with me and love u mine bby girl.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-item-dot"></div>
+                    <div class="timeline-item-content">
+                        <h3>Building Our Bond</h3>
+                        <p>Every day, our bond grew stronger. We shared dreams, fears, and countless silly moments. You became my confidante, my best friend, and the person I couldn't imagine a day without. Can’t wait to make u officially mine. Thanks a lots bacxcha, for coming to my life to let the darkness get away and give the love I can’t even imagine I even was worth it for that, love u sweetheart.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-item-dot"></div>
+                    <div class="timeline-item-content">
+                        <h3>Our Journey</h3>
+                        <p>From the strangers to suddenly enemy, then friend to best friend with endless joy and then the love of my life, whom I always cherish for the whole life and every moment we share together were always memorable. I can't wait to create many more memories. Happy birthday bby princess, lots of love bacchha.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-item-dot"></div>
+                    <div class="timeline-item-content">
+                        <h3>Our First Adventure</h3>
+                        <p>Iska kyaa hee bolu mai, ye to 9 june thaa jis din we meet for the first time in person, where I was totally nervous to meet ki kyaa hoga. Especially of the place, because its your home locality, and even ghar kee niche. Aapke apno ke beech me aake aapse milna, vo bhi 3 baari in a same day is really so adventurous. And after meeting and seeing u in front of me, mine mind totally gets blank where I forget to do some things which we discussed, but koi naa, touching you is already soo much enough to melt me. Really we were going to laugh over reminding that first meeting of our, but that really was remarkable, bachha. Happy birthday baccha,love u princess.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-item-dot"></div>
+                    <div class="timeline-item-content">
+                        <h3>Overcoming with the situations</h3>
+                        <p>We both know our path really was so hard that we can’t imagine such a phase will come there, I am not going to mention because others will see this as well. But the way we handle those things, I can’t imagine ki u really is staying with me even after so much misunderstandings and fights in between us. I promise u that I will be with u till my last breath because there is no turning down in between us and after all u are only mine responsibility, aise hee priority nhi bola hai. Happy birthday princess, love u mine sunshine.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-item-dot"></div>
+                    <div class="timeline-item-content">
+                        <h3>Future Dreams</h3>
+                        <p>As we both know ki haa hard hai future, but let’s promise to each other ki in future sath me sab handle kar lenge ek sath rah kar. Koi bhi, kuch bhi chiz hogi, we won’t think for twice to take the step for each other. Baaki we already imagined our world together, so let’s join hand to complete that together. Happy birthday mallkin, love u meri jaan. </p>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-button" onclick="showPage('page1')">Back to Home</button>
+                <button class="nav-button" onclick="showPage('page2')">View Gallery</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables for page management
+        let currentPage = 'page1';
+        const pages = document.querySelectorAll('.page');
+
+        /**
+         * Shows a specific page and hides others.
+         * @param {string} pageId - The ID of the page to show (e.g., 'page1', 'page2').
+         */
+        function showPage(pageId) {
+            pages.forEach(page => {
+                if (page.id === pageId) {
+                    page.classList.add('active');
+                } else {
+                    page.classList.remove('active');
+                }
+            });
+            currentPage = pageId;
+        }
+
+        // --- Page 1 Specific Functions ---
+
+        /**
+         * Handles the click on the "Open" button.
+         * Reveals the cake, birthday message, candles, and blow button.
+         */
+        function openBirthdaySurprise() {
+            document.querySelector('.open-button').style.display = 'none'; // Hide the open button
+            const cakeContainer = document.getElementById('cakeContainer'); // Get cake container
+            const cakeMessage = document.getElementById('cakeMessage'); // Get cake message
+            const candlesWrapper = document.getElementById('candlesWrapper');
+            const blowCandlesButton = document.getElementById('blowCandlesButton');
+
+            // Show cake container and message
+            cakeContainer.style.display = 'flex';
+            cakeMessage.style.opacity = '1'; // Ensure message is visible
+            cakeMessage.style.transform = 'translateY(0)'; // Ensure message is in place
+
+            // Show candles and blow button with delay
+            setTimeout(() => {
+                candlesWrapper.classList.remove('hidden'); // Show candles
+                blowCandlesButton.classList.remove('hidden'); // Show blow button
+            }, 500); // Small delay for effect
+        }
+
+        /**
+         * Handles blowing out the candles one by one and triggering the party popper.
+         */
+        function blowCandles() {
+            const flames = document.querySelectorAll('.flame');
+            const blowCandlesButton = document.getElementById('blowCandlesButton');
+            blowCandlesButton.style.display = 'none'; // Hide the blow button
+
+            let delay = 0;
+            flames.forEach((flame, index) => {
+                setTimeout(() => {
+                    flame.classList.add('blown-out'); // Add class to hide flame
+                    // Remove the flame element from the DOM after its transition
+                    setTimeout(() => {
+                        flame.remove();
+                    }, 300); // Match this with the CSS transition duration for .flame
+                }, delay);
+                delay += 200; // Stagger the blowing out of each candle by 200ms
+            });
+
+            // Trigger party popper after all candles have had time to blow out
+            setTimeout(() => {
+                triggerPartyPopper();
+            }, delay + 200); // Add a small buffer after the last candle blows out
+
+            // Show letter icon after party popper
+            setTimeout(() => {
+                const letterIcon = document.getElementById('letterIcon');
+                letterIcon.style.display = 'block';
+                letterIcon.style.opacity = '1'; // Trigger fadeIn animation
+            }, delay + 1700); // Adjust delay based on popper animation duration
+        }
+
+        /**
+         * Triggers a burst of party popper confetti.
+         */
+        function triggerPartyPopper() {
+            const body = document.body;
+            const numConfetti = 80; // More confetti for a popper effect
+            const colors = ['#ff00ff', '#00ffff', '#ffcc00', '#00ff00', '#ff66aa']; // Bright popper colors
+            const shapes = ['circle', 'square', 'star'];
+
+            for (let i = 0; i < numConfetti; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('popper-confetti');
+
+                const randomShape = shapes[Math.floor(Math.random() * shapes.length)];
+                if (randomShape === 'square') {
+                    confetti.classList.add('square');
+                } else if (randomShape === 'star') {
+                    confetti.classList.add('star');
+                }
+
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.width = (Math.random() * 10 + 10) + 'px'; // 10-20px
+                confetti.style.height = confetti.style.width;
+
+                // Random end positions for explosion effect
+                const xEnd = (Math.random() - 0.5) * 200 + 'vw'; // -100vw to 100vw relative to center
+                const yEnd = (Math.random() - 0.5) * 200 + 'vh'; // -100vh to 100vh relative to center
+
+                confetti.style.setProperty('--x-end', xEnd);
+                confetti.style.setProperty('--y-end', yEnd);
+
+                confetti.style.animationDuration = (Math.random() * 1.5 + 2) + 's'; // 2-3.5s
+                confetti.style.animationDelay = Math.random() * 0.2 + 's'; // Small delay for staggered burst
+
+                body.appendChild(confetti);
+
+                confetti.addEventListener('animationend', () => {
+                    confetti.remove();
+                });
+            }
+        }
+
+
+        /**
+         * Handles the click on the love letter icon.
+         * Opens the letter and reveals the message, then starts the image slider.
+         */
+        function openLoveLetter() {
+            const letterIcon = document.getElementById('letterIcon');
+            const loveLetterContent = document.getElementById('loveLetterContent');
+            const imageSlider = document.getElementById('imageSlider');
+            const navButtonsPage1 = document.getElementById('navButtonsPage1');
+
+            letterIcon.style.display = 'none'; // Hide the letter icon
+
+            // Animate letter opening
+            loveLetterContent.style.display = 'block';
+            setTimeout(() => {
+                loveLetterContent.classList.add('open');
+            }, 10); // Small delay to allow display:block to apply before transition
+
+            // Show image slider after letter animation
+            setTimeout(() => {
+                imageSlider.style.display = 'block';
+                imageSlider.style.opacity = '1'; // Trigger fadeIn animation
+                startImageSlider(); // Start the slider
+            }, 2500); // Adjust delay based on letter opening animation duration
+
+            // Show navigation buttons after slider appears
+            setTimeout(() => {
+                navButtonsPage1.style.display = 'flex';
+            }, 4000); // Delay after slider starts
+        }
+
+        // --- Image Slider Logic ---
+        let slideIndex = 0;
+        let sliderInterval;
+
+        /**
+         * Displays a specific slide in the image slider.
+         * @param {number} n - The index of the slide to display.
+         */
+        function showSlides(n) {
+            const slides = document.querySelectorAll('.slider-image');
+            if (slides.length === 0) return;
+
+            // Wrap around logic
+            if (n >= slides.length) { slideIndex = 0; }
+            if (n < 0) { slideIndex = slides.length - 1; }
+
+            // Hide all slides
+            slides.forEach(slide => slide.classList.remove('active'));
+
+            // Show the current slide
+            slides[slideIndex].classList.add('active');
+        }
+
+        /**
+         * Advances the image slider to the next slide.
+         */
+        function nextSlide() {
+            slideIndex++;
+            showSlides(slideIndex);
+        }
+
+        /**
+         * Starts the automatic image slider.
+         */
+        function startImageSlider() {
+            showSlides(slideIndex); // Show initial slide
+            sliderInterval = setInterval(nextSlide, 3000); // Change image every 3 seconds
+        }
+
+        // Initial setup when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            showPage('page1'); // Ensure page 1 is shown on load
+        });
+    </script>
+</body>
+</html>
